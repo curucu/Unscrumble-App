@@ -23,13 +23,25 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
+import com.example.unscramble.data.WordDatabase
+import com.example.unscramble.data.WordRepository
 import com.example.unscramble.ui.GameScreen
+import com.example.unscramble.ui.GameViewModel
+import com.example.unscramble.ui.GameViewModelFactory
 import com.example.unscramble.ui.theme.UnscrambleTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var viewModel: GameViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        val wordDao = WordDatabase.getDatabase(this).wordDao()
+        val repository = WordRepository(wordDao)
+        val factory = GameViewModelFactory(repository)
+
+        viewModel = ViewModelProvider(this, factory)[GameViewModel::class.java]
         setContent {
             UnscrambleTheme {
                 Surface(
